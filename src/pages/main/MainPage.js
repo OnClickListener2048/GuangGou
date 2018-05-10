@@ -5,15 +5,24 @@
 import React, { Component } from 'react';
 import {
     Text,
+    View,
 } from 'react-native';
-export default class MainPage extends React.Component{
+
+export default class MainPage extends Component{
+
     render(){
         return (
 
-                <Text>
-                    MainPage
-                </Text>
+                <View>
+                    <Text>MainPage</Text>
+                </View>
 
         );
     }
 }
+
+
+
+
+
+

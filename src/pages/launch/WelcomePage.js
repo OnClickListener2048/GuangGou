@@ -3,13 +3,18 @@
  */
 import SplashScreen from 'react-native-splash-screen'
 import React, { Component } from 'react';
-import {Text,} from "react-native"
+import {Text,
+    View,
+            }
+from "react-native"
 export default class WelcomePage extends Component {
 
     componentDidMount() {
         // do stuff while splash screen is shown
         // After having done stuff (such as async tasks) hide the splash screen
-        setInterval(() => {
+
+
+        setTimeout(() => {
             SplashScreen.hide();
             this.props.navigation.navigate('MainPage');
         },1500);
@@ -17,6 +22,6 @@ export default class WelcomePage extends Component {
     }
 
     render(){
-        return <Text/>
+        return <View/>
     }
 }
