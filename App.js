@@ -5,71 +5,111 @@
  */
 import WelcomePage from "./src/pages/launch/WelcomePage";
 import MainPage from "./src/pages/main/MainPage";
-
+import HotPage from "./src/pages/hot/HotPage"
 import React, {Component} from 'react';
-import {
-    YellowBox
-    , Dimensions
-    , Image
-    , TouchableOpacity
-} from 'react-native';
-import {
-    createStackNavigator
-    ,
-} from 'react-navigation';
-import Main from "./src/Main";
 
-const {height, width} = Dimensions.get("window");
+
+import Main from "./src/Main";
+import {
+    createBottomTabNavigator,
+    createStackNavigator,
+} from 'react-navigation';
+import {SCREEN_WIDTH} from "./src/utils/Constant";
+import SearchPage from "./src/pages/search/SearchPage";
+
 
 export default createStackNavigator({
     Welcome: {
         screen: WelcomePage
     },
-    MainPage: {
+    Main: {
         screen: Main,
-
         navigationOptions: {
-            title: 'Home',
-            headerStyle: {
-                backgroundColor: '#f4511e',
-            },
-            headerTitle: "逛丢",
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-                flex: 1,
-                fontSize: 30,
-                width: width,
-                alignSelf: "center",
-                textAlign: "center",
-            },
-            headerBackTitle: null,
-            headerLeft: (<TouchableOpacity>
-                <Image style={{
-                    width: 20,
-                    height: 20,
-                    marginLeft: 15,
-                }}
-                       source={require("./src/res/hot_icon_20x20.png")}/>
-            </TouchableOpacity>),
-
-            headerRight: (
-                <TouchableOpacity>
-                    <Image
-                        style={{
-                            width: 20,
-                            height: 20,
-                            marginRight: 15,
-                        }}
-                        source={require("./src/res/search_icon_20x20.png")}/>
-                </TouchableOpacity>
-            ),
-            gesturesEnabled: true,
+            title: "2132131",
+            header: null,
         },
-        headerBackTitle: "shitty",
     },
+    HotPage: {
+        screen: HotPage,
+    },
+
+    SearchPage: {
+        screen: SearchPage,
+    },
+
+
 }, {
     headerMode: "screen",
 });
+
+
+// class DetailsScreen extends React.Component {
+//     static navigationOptions = {
+//         title: "DetailsScreen"
+//     };
+//     render() {
+//         return (
+//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//                 <Text>Details!</Text>
+//             </View>
+//         );
+//     }
+// }
+//
+// class HomeScreen extends React.Component {
+//     static navigationOptions = {
+//         title: "HomeScreen"
+//     };
+//
+//     render() {
+//         return (
+//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//                 {/* other code from before here */}
+//                 <Button
+//                     title="HomeScreen Go to Details"
+//                     onPress={() => this.props.navigation.navigate('Details')}
+//                 />
+//             </View>
+//         );
+//     }
+// }
+//
+// class SettingsScreen extends React.Component {
+//     static navigationOptions = {
+//         title: "SettingsScreen"
+//     };
+//     render() {
+//         return (
+//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//                 {/* other code from before here */}
+//                 <Button
+//                     title="SettingsScreen Go to Details"
+//                     onPress={() => this.props.navigation.navigate('Details')}
+//                 />
+//             </View>
+//         );
+//     }
+// }
+//
+// const HomeStack = createStackNavigator({
+//     Home: HomeScreen,
+//     Details: DetailsScreen,
+// });
+//
+// const SettingsStack = createStackNavigator({
+//     Settings: SettingsScreen,
+//     Details: DetailsScreen,
+// });
+//
+// export default createBottomTabNavigator(
+//     {
+//         Home: HomeStack,
+//         Settings: SettingsStack,
+//     },
+//     {
+//         /* Other configuration remains unchanged */
+//     }
+// );
 
 
 console.disableYellowBox = true;
