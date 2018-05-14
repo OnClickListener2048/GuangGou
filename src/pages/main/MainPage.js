@@ -8,6 +8,8 @@ import {
     Text, TouchableOpacity,
     View
     , Dimensions
+    ,FlatList
+    ,StyleSheet
 } from 'react-native';
 import {SCREEN_WIDTH} from "../../utils/Constant";
 
@@ -54,12 +56,45 @@ export default class MainPage extends Component {
         }
     };
 
+    state = {
+        data: {},
+    };
+
+    componentDidMount() {
+        this.loadData();
+    }
+
+    loadData = () => {
+
+        let params = {"count": 10};
+
+
+        HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
+            .then(response => {
+
+                this.setState({
+                    data:response.data,
+                });
+
+            });
+    };
 
     render() {
+        const {data} = this.state;
+        console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`)
         return (
 
             <View>
-                <Text>MainPage</Text>
+                <FlatList contentContainerStyle={style.root}
+                          data={data}
+                          renderItem={({item}) =>(<Text style={{
+                              width:30,
+                              height:30,
+                          }}>
+                              {item.title}
+                          </Text>)}
+                          keyExtractor={(item)=>item.id}
+                />
             </View>
 
         );
@@ -67,7 +102,16 @@ export default class MainPage extends Component {
 }
 
 
+const style = StyleSheet.create({
+    root: {
+        paddingHorizontal: 10
+        ,width: 300
+        ,height:500
+        ,
 
+    },
+
+});
 
 
 
