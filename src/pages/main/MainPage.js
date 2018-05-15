@@ -10,8 +10,12 @@ import {
     , Dimensions
     ,FlatList
     ,StyleSheet
+    ,ActivityIndicator
+    ,AsyncStorage
+    ,
 } from 'react-native';
 import {SCREEN_WIDTH} from "../../utils/Constant";
+import MainPageItem from "./MainPageItem";
 
 export default class MainPage extends Component {
 
@@ -58,6 +62,9 @@ export default class MainPage extends Component {
 
     state = {
         data: {},
+        loaded:false,
+        refreshing:false,
+        loadMore:false,
     };
 
     componentDidMount() {
@@ -68,34 +75,75 @@ export default class MainPage extends Component {
 
         let params = {"count": 10};
 
-
+        this.setState({
+            refreshing: true,
+        });
         HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
             .then(response => {
 
                 this.setState({
                     data:response.data,
+                    loaded:true,
+                    refreshing:false,
                 });
+
+                AsyncStorage.setItem("lastID", response.data[response.data.length - 1].id);
+
 
             });
     };
 
+    onItemPress = () => {
+        alert("onItemPress")
+    };
+
+    _onRefresh = () => {
+        this.loadData()
+    };
+
+    _onEndReached = () => {
+        AsyncStorage.getItem("lastID")
+            .then((value) => {
+                let params = {"count": 10,"sinceid" : value};
+                this.setState({
+                    loadMore: true,
+                });
+                HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
+                    .then(responseData => {
+                        this.setState({
+                            date: this.state.data.concat(responseData.data),
+                            loadMore:false,
+                        });
+
+                        AsyncStorage.setItem("lastID", this.state.data[this.state.data.length - 1].id);
+                    });
+            }
+        );
+    };
+
     render() {
-        const {data} = this.state;
+        const {data,loaded, refreshing,loadMore } = this.state;
         console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`)
         return (
 
-            <View>
+            loaded ? <View>
                 <FlatList contentContainerStyle={style.root}
                           data={data}
-                          renderItem={({item}) =>(<Text style={{
-                              width:30,
-                              height:30,
-                          }}>
-                              {item.title}
-                          </Text>)}
-                          keyExtractor={(item)=>item.id}
+                          renderItem={({item}) => (<MainPageItem
+                              image={item.image}
+                              title={item.title}
+                              name={item.mall}
+                              onPress={this.onItemPress}
+                          />)}
+                          keyExtractor={(item) => item.id}
+                          ListFooterComponent={() => {
+                            return loadMore&&<ActivityIndicator size="large" style={{marginTop: 15}}/>
+                          }}
+                          onEndReached={this._onEndReached}
+                          onRefresh={this._onRefresh}
+                          refreshing={refreshing}
                 />
-            </View>
+            </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>
 
         );
     }
@@ -104,11 +152,6 @@ export default class MainPage extends Component {
 
 const style = StyleSheet.create({
     root: {
-        paddingHorizontal: 10
-        ,width: 300
-        ,height:500
-        ,
-
     },
 
 });
