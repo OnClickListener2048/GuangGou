@@ -8,18 +8,19 @@ import {
     Text, TouchableOpacity,
     View
     , Dimensions
-    ,FlatList
-    ,StyleSheet
-    ,ActivityIndicator
-    ,AsyncStorage
+    , FlatList
+    , StyleSheet
+    , ActivityIndicator
+    , AsyncStorage
     ,
 } from 'react-native';
 import {SCREEN_WIDTH} from "../../utils/Constant";
 import MainPageItem from "./MainPageItem";
+import MainPageItemDetailsPage from "./MainPageItemDetailsPage";
 
 export default class MainPage extends Component {
 
-    static navigationOptions = ({ navigation }) => {
+    static navigationOptions = ({navigation}) => {
 
         return {
             title: 'Home',
@@ -36,7 +37,7 @@ export default class MainPage extends Component {
                 textAlign: "center",
             },
             headerBackTitle: null,
-            headerLeft: (<TouchableOpacity onPress={()=>navigation.navigate("HotPage")} >
+            headerLeft: (<TouchableOpacity onPress={() => navigation.navigate("HotPage")}>
                 <Image style={{
                     width: 20,
                     height: 20,
@@ -46,7 +47,7 @@ export default class MainPage extends Component {
             </TouchableOpacity>),
 
             headerRight: (
-                <TouchableOpacity onPress={()=>navigation.navigate("SearchPage")}>
+                <TouchableOpacity onPress={() => navigation.navigate("SearchPage")}>
                     <Image
                         style={{
                             width: 20,
@@ -62,9 +63,9 @@ export default class MainPage extends Component {
 
     state = {
         data: {},
-        loaded:false,
-        refreshing:false,
-        loadMore:false,
+        loaded: false,
+        refreshing: false,
+        loadMore: false,
     };
 
     componentDidMount() {
@@ -72,7 +73,6 @@ export default class MainPage extends Component {
     }
 
     loadData = () => {
-
         let params = {"count": 10};
 
         this.setState({
@@ -82,19 +82,23 @@ export default class MainPage extends Component {
             .then(response => {
 
                 this.setState({
-                    data:response.data,
-                    loaded:true,
-                    refreshing:false,
+                    data: response.data,
+                    loaded: true,
+                    refreshing: false,
                 });
 
-                AsyncStorage.setItem("lastID", response.data[response.data.length - 1].id);
+                AsyncStorage.setItem("lastID", response.data[response.data.length - 1].id.toString(), (error) => {
+                    error && alert(error);
+                });
 
 
             });
     };
 
-    onItemPress = () => {
-        alert("onItemPress")
+    onItemPress = (id) => {
+        // alert(`onItemPress---${id}`);
+        console.log(`onItemPress---${id}`);
+        this.props.navigation.navigate("MainPageItemDetailsPage", {url:'https://guangdiu.com/api/showdetail.php' + '?' + 'id=' + id});
     };
 
     _onRefresh = () => {
@@ -104,25 +108,28 @@ export default class MainPage extends Component {
     _onEndReached = () => {
         AsyncStorage.getItem("lastID")
             .then((value) => {
-                let params = {"count": 10,"sinceid" : value};
-                this.setState({
-                    loadMore: true,
-                });
-                HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
-                    .then(responseData => {
-                        this.setState({
-                            date: this.state.data.concat(responseData.data),
-                            loadMore:false,
-                        });
+                    let params = {"count": 10, "sinceid": value};
+                    this.setState({loadMore: true});
+                    HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
+                        .then(responseData => {
+                            setTimeout(() => {
+                                this.setState({
+                                    data: this.state.data.concat(responseData.data),
+                                    loadMore: false,
+                                });
+                            },2000);
 
-                        AsyncStorage.setItem("lastID", this.state.data[this.state.data.length - 1].id);
-                    });
-            }
-        );
+                            AsyncStorage.setItem("lastID", this.state.data[this.state.data.length - 1].id.toString()
+                                , (error) => {
+                                    error && alert(error);
+                                });
+                        });
+                }
+            );
     };
 
     render() {
-        const {data,loaded, refreshing,loadMore } = this.state;
+        const {data, loaded, refreshing, loadMore} = this.state;
         console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`)
         return (
 
@@ -133,15 +140,20 @@ export default class MainPage extends Component {
                               image={item.image}
                               title={item.title}
                               name={item.mall}
-                              onPress={this.onItemPress}
+                              id={item.id}
+                              onPress={(id)=>this.onItemPress(id)}
                           />)}
                           keyExtractor={(item) => item.id}
                           ListFooterComponent={() => {
-                            return loadMore&&<ActivityIndicator size="large" style={{marginTop: 15}}/>
+                              return loadMore ? <ActivityIndicator size="large" style={{
+                                  marginTop: 5,
+                                  marginBottom: 5
+                              }}/> : null;
                           }}
                           onEndReached={this._onEndReached}
                           onRefresh={this._onRefresh}
                           refreshing={refreshing}
+                          onEndReachedThreshold={0.1}
                 />
             </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>
 
@@ -151,8 +163,7 @@ export default class MainPage extends Component {
 
 
 const style = StyleSheet.create({
-    root: {
-    },
+    root: {},
 
 });
 

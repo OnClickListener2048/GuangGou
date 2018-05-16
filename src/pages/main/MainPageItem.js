@@ -10,11 +10,11 @@ import {
 import {SCREEN_WIDTH} from "../../utils/Constant";
 
 const MainPageItem = (props) => {
-    const {image, title, name, onPress = {}} = props;
+    const {image, title, name, onPress = {},id} = props;
 
     return (
         <View>
-            <TouchableOpacity onPress={onPress}>
+            <TouchableOpacity onPress={()=>onPress(id)}>
                 <View style={styles.container}>
                     <Image style={styles.imageRight} source={{uri: image}}/>
                     <View style={styles.rightContainer}>

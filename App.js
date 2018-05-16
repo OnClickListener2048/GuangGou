@@ -4,18 +4,16 @@
  * @flow
  */
 import WelcomePage from "./src/pages/launch/WelcomePage";
-import MainPage from "./src/pages/main/MainPage";
 import HotPage from "./src/pages/hot/HotPage"
 import React, {Component} from 'react';
 
 
 import Main from "./src/Main";
 import {
-    createBottomTabNavigator,
     createStackNavigator,
 } from 'react-navigation';
-import {SCREEN_WIDTH} from "./src/utils/Constant";
 import SearchPage from "./src/pages/search/SearchPage";
+import MainPageItemDetailsPage from "./src/pages/main/MainPageItemDetailsPage";
 
 
 export default createStackNavigator({
@@ -36,6 +34,10 @@ export default createStackNavigator({
     SearchPage: {
         screen: SearchPage,
     },
+
+    MainPageItemDetailsPage:{
+        screen:MainPageItemDetailsPage,
+    }
 
 
 }, {
