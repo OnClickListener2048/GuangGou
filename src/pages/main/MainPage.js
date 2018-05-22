@@ -12,22 +12,29 @@ import {
     , StyleSheet
     , ActivityIndicator
     , AsyncStorage
-    ,
+    , Modal
 } from 'react-native';
 import {SCREEN_WIDTH} from "../../utils/Constant";
 import MainPageItem from "./MainPageItem";
 import MainPageItemDetailsPage from "./MainPageItemDetailsPage";
+import VerticalDrawer from "./VerticalDrawer";
 
 export default class MainPage extends Component {
 
-    static navigationOptions = ({navigation}) => {
 
+    static navigationOptions = ({navigation}) => {
+        const {params = {}} = navigation.state;
         return {
             title: 'Home',
             headerStyle: {
                 backgroundColor: '#f4511e',
             },
-            headerTitle: "逛丢",
+            headerTitle: (
+                <TouchableOpacity onPress={() => params._onTitlePress()}
+                                  style={style.middleTitleStyle}>
+                    <Image source={require("../../../src/res/navtitle_home_down_66x20.png")}/>
+                </TouchableOpacity>
+            ),
             headerTintColor: '#fff',
             headerTitleStyle: {
                 flex: 1,
@@ -66,10 +73,14 @@ export default class MainPage extends Component {
         loaded: false,
         refreshing: false,
         loadMore: false,
+        isVerticalDrawerAppears: false,
     };
 
     componentDidMount() {
         this.loadData();
+        this.props.navigation.setParams({
+            _onTitlePress: this._onTitlePress
+        })
     }
 
     loadData = () => {
@@ -98,12 +109,35 @@ export default class MainPage extends Component {
     onItemPress = (id) => {
         // alert(`onItemPress---${id}`);
         console.log(`onItemPress---${id}`);
-        this.props.navigation.navigate("MainPageItemDetailsPage", {url:'https://guangdiu.com/api/showdetail.php' + '?' + 'id=' + id});
+        this.props.navigation.navigate("MainPageItemDetailsPage", {url: 'https://guangdiu.com/api/showdetail.php' + '?' + 'id=' + id});
     };
 
     _onRefresh = () => {
         this.loadData()
     };
+
+    onRequestClose = () => {
+        this.setState({
+            isVerticalDrawerAppears: false,
+        });
+        alert("onRequestClose");
+    };
+
+
+    _onTitlePress = () => {
+        this.setState({
+            isVerticalDrawerAppears: true,
+        });
+    };
+
+
+    onVainPress() {
+        this.setState({
+            isVerticalDrawerAppears: false,
+        });
+
+        alert("onVainPress");
+    }
 
     _onEndReached = () => {
         AsyncStorage.getItem("lastID")
@@ -117,7 +151,7 @@ export default class MainPage extends Component {
                                     data: this.state.data.concat(responseData.data),
                                     loadMore: false,
                                 });
-                            },2000);
+                            }, 2000);
 
                             AsyncStorage.setItem("lastID", this.state.data[this.state.data.length - 1].id.toString()
                                 , (error) => {
@@ -133,7 +167,7 @@ export default class MainPage extends Component {
         console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`)
         return (
 
-            loaded ? <View>
+            loaded ? <View style={style.container}>
                 <FlatList contentContainerStyle={style.root}
                           data={data}
                           renderItem={({item}) => (<MainPageItem
@@ -141,7 +175,7 @@ export default class MainPage extends Component {
                               title={item.title}
                               name={item.mall}
                               id={item.id}
-                              onPress={(id)=>this.onItemPress(id)}
+                              onPress={(id) => this.onItemPress(id)}
                           />)}
                           keyExtractor={(item) => item.id}
                           ListFooterComponent={() => {
@@ -155,15 +189,39 @@ export default class MainPage extends Component {
                           refreshing={refreshing}
                           onEndReachedThreshold={0.1}
                 />
-            </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>
+                <Modal
+                    pointerEvents={"box-none"}
+                    animationType="slide"
+                    transparent={false}
+                    onPress={this.onVainPress}
+                    visible={this.state.isVerticalDrawerAppears}
+                    onRequestClose={() => this.onRequestClose()}>
 
+                    <VerticalDrawer style={{
+                        backgroundColor:"red",
+                    }}/>
+
+                </Modal>
+            </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>
         );
     }
 }
 
 
 const style = StyleSheet.create({
+
+    container: {
+        flex: 1,
+        alignItems: "center",
+    },
+
     root: {},
+
+    middleTitleStyle: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center",
+    },
 
 });
 
