@@ -9,17 +9,27 @@ import {
     Image,
     Text,
     TouchableOpacity,
+    TouchableWithoutFeedback,
 } from "react-native";
 import VerticalDrawerData from "./VerticalDrawerData";
-import {SCREEN_WIDTH} from "../../utils/Constant";
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/Constant";
 
 export default class VerticalDrawer extends Component {
 
+    static defaultProps = {
+        onVainPress: {},
+        onItemPressReload: {},
+    };
+
+    onItemPress(item) {
+        this.props.onVainPress();
+        this.props.onItemPressReload(item);
+    }
 
     renderItem = (item) => {
 
         return (
-            <TouchableOpacity style={{
+            <TouchableOpacity onPress={()=>this.onItemPress(item)} style={{
                 flex: 1,
                 width: SCREEN_WIDTH / 4,
                 height: SCREEN_WIDTH / 4,
@@ -44,16 +54,17 @@ export default class VerticalDrawer extends Component {
 
     render() {
         return (
-            <View style={{
-                marginTop: 56,
-            }}>
-                <FlatList
-                    data={VerticalDrawerData}
-                    renderItem={({item}) => this.renderItem(item)}
-                    numColumns={4}
-                    horizontal={false}
-                />
-            </View>
+                <View style={{
+                    marginTop: 56,
+                    backgroundColor: "white",
+                }}>
+                    <FlatList
+                        data={VerticalDrawerData}
+                        renderItem={({item}) => this.renderItem(item)}
+                        numColumns={4}
+                        horizontal={false}
+                    />
+                </View>
         )
     }
 };

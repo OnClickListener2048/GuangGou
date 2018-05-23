@@ -2,7 +2,7 @@
  * Created by dagou on 2018/5/9.
  */
 
-import React, {Component} from 'react';
+import React, {Component,PropTypes} from 'react';
 import {
     Image,
     Text, TouchableOpacity,
@@ -13,11 +13,16 @@ import {
     , ActivityIndicator
     , AsyncStorage
     , Modal
+    ,TouchableWithoutFeedback
+    ,
 } from 'react-native';
-import {SCREEN_WIDTH} from "../../utils/Constant";
+import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/Constant";
 import MainPageItem from "./MainPageItem";
 import MainPageItemDetailsPage from "./MainPageItemDetailsPage";
 import VerticalDrawer from "./VerticalDrawer";
+
+const {width = SCREEN_WIDTH, height = SCREEN_HEIGHT} = Dimensions.get("window");
+
 
 export default class MainPage extends Component {
 
@@ -131,13 +136,51 @@ export default class MainPage extends Component {
     };
 
 
-    onVainPress() {
+    onVainPress = () => {
         this.setState({
             isVerticalDrawerAppears: false,
         });
+    };
 
-        alert("onVainPress");
+    onItemPressReload(item) {
+        this.setState({
+            refreshing: true,
+        });
+        let params = {};
+        if (item.mall ===""&&item.cate==="") {
+            this.loadData();
+            this.setState({
+                refreshing: false,
+            });
+            return;
+        }
+
+        if (item.mall === "") {
+            params = {
+                cate: item.cate,
+            };
+        } else {
+            params = {
+                mall: item.mall,
+            };
+        }
+
+        HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
+            .then((response) => {
+                this.setState({
+                    data: response.data,
+                    refreshing: false,
+                });
+                AsyncStorage.setItem("lastID", response.data[response.data.length - 1].id.toString(), (error) => {
+                    error && alert(error);
+                });
+            }).catch(error => {
+            error && alert(error);
+
+        });
+
     }
+
 
     _onEndReached = () => {
         AsyncStorage.getItem("lastID")
@@ -191,15 +234,22 @@ export default class MainPage extends Component {
                 />
                 <Modal
                     pointerEvents={"box-none"}
-                    animationType="slide"
-                    transparent={false}
-                    onPress={this.onVainPress}
+                    animationType="none"
+                    transparent={true}
                     visible={this.state.isVerticalDrawerAppears}
                     onRequestClose={() => this.onRequestClose()}>
+                    <TouchableWithoutFeedback onPress={this.onVainPress}>
+                        <View style={{
+                            width: width,
+                            height: height,
+                        }}>
+                            <VerticalDrawer
+                                onVainPress={this.onVainPress}
+                                onItemPressReload={(item)=>this.onItemPressReload(item)}
+                            />
+                        </View>
+                    </TouchableWithoutFeedback>
 
-                    <VerticalDrawer style={{
-                        backgroundColor:"red",
-                    }}/>
 
                 </Modal>
             </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>
