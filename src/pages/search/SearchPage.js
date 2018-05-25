@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/Constant";
 import MainPageItem from "../main/MainPageItem";
+import LoadingView from "../common/LoadingView";
 
 const {width = SCREEN_WIDTH, height = SCREEN_HEIGHT} = Dimensions.get("window");
 
@@ -34,62 +35,79 @@ export default class SearchPage extends Component {
 
 
     constructor(props) {
-        super(props)
-
+        super(props);
         this.changeText = "";
-
-
     }
 
     state = {
         data: [],
         refreshing: false,
-        loaded: true,
+        loaded: false,
         loadMore: false,
+        firstLoad: true,
     };
 
-    loadData() {
-        alert(this);
+    loadData = () => {
         if (!this.changeText) return;
 
         let params = {
             "q": this.changeText,
+            "count": "10",
         };
-
         this.setState({
-            loaded: true,
+            firstLoad: false,
+            loaded: false,
         });
         HTTPBase.get("http://guangdiu.com/api/getresult.php", params)
             .then(response => {
-                this.setState({
-                    data: response.data,
-                });
+                setTimeout(() => {
+                    this.setState({
+                        data: response.data,
+                        loaded: true,
+                    });
+                }, 3000);
 
                 let searchLastID = response.data[response.data.length - 1].id;
                 AsyncStorage.setItem('searchLastID', searchLastID.toString());
             })
 
-    }
+    };
 
     popupHome() {
         this.props.navigation.goBack();
     }
 
-    onItemPress = () => {
-
+    onItemPress = (id) => {
+        this.props.navigation.navigate("MainPageItemDetailsPage", {url: 'https://guangdiu.com/api/showdetail.php' + '?' + 'id=' + id});
     };
 
     _onEndReached = () => {
+        AsyncStorage.getItem("searchLastID")
+            .then((value) => {
+                    let params = {"count": 10, "sinceid": value};
+                    HTTPBase.get("https://guangdiu.com/api/getlist.php", params)
+                        .then(responseData => {
+                            setTimeout(() => {
+                                this.setState({
+                                    data: this.state.data.concat(responseData.data),
+                                });
+                            }, 2000);
 
+                            AsyncStorage.setItem("searchLastID", this.state.data[this.state.data.length - 1].id.toString()
+                                , (error) => {
+                                    error && alert(error);
+                                });
+                        });
+                }
+            );
     };
 
     _onRefresh = () => {
-
+        this.loadData();
     };
 
     render() {
-        const {loaded, loadMore, refreshing, data} = this.state;
-        alert(data);
+        const {loaded, refreshing, data, firstLoad} = this.state;
         return (
             <View style={SearchStyles.container}>
                 <View style={SearchStyles.searchArea}>
@@ -119,7 +137,7 @@ export default class SearchPage extends Component {
                     </View>
                 </View>
 
-                {loaded ?  <View style={SearchStyles.container}>
+                {firstLoad ? null:(loaded ? <View style={SearchStyles.container}>
                     <FlatList contentContainerStyle={SearchStyles.root}
                               data={data}
                               renderItem={({item}) => (<MainPageItem
@@ -131,7 +149,7 @@ export default class SearchPage extends Component {
                               />)}
                               keyExtractor={(item) => item.id}
                               ListFooterComponent={() => {
-                                  return loadMore ? <ActivityIndicator size="large" style={{
+                                  return loaded ? <ActivityIndicator size="large" style={{
                                       marginTop: 5,
                                       marginBottom: 5
                                   }}/> : null;
@@ -142,23 +160,27 @@ export default class SearchPage extends Component {
                               onEndReachedThreshold={0.1}
                     />
 
-                </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>}
+                </View> : <LoadingView location={"top"} text={"加载中"}/>)}
 
             </View>
         );
     }
 
 };
-
+{/*<View style={{*/}
+    {/*flex: 1,*/}
+    {/*alignContent: "center",*/}
+    {/*justifyContent: "center"*/}
+{/*}}>*/}
+    {/*<ActivityIndicator size="large"/>*/}
+{/*</View>*/}
 
 const SearchStyles = StyleSheet.create({
     container: {
         flex: 1,
     },
 
-    root:{
-
-    },
+    root: {},
 
     searchArea: {
         height: 44,
