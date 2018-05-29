@@ -2,26 +2,28 @@
  * Created by dagou on 2018/5/9.
  */
 
-import React, {Component,PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     Image,
     Text, TouchableOpacity,
     View
-    , Dimensions
     , FlatList
     , StyleSheet
     , ActivityIndicator
     , AsyncStorage
     , Modal
-    ,TouchableWithoutFeedback
+    , TouchableWithoutFeedback
     ,
 } from 'react-native';
 import {SCREEN_HEIGHT, SCREEN_WIDTH} from "../../utils/Constant";
 import MainPageItem from "./MainPageItem";
 import MainPageItemDetailsPage from "./MainPageItemDetailsPage";
 import VerticalDrawer from "./VerticalDrawer";
+import TopHeaderModal from "../modal/TopHeaderModal";
+import VerticalDrawerData from "./VerticalDrawerData";
+import CommonStyles from "../../styles/CommonStyles";
+import CommonItemList from "../common/CommonItemList";
 
-const {width = SCREEN_WIDTH, height = SCREEN_HEIGHT} = Dimensions.get("window");
 
 
 export default class MainPage extends Component {
@@ -36,7 +38,7 @@ export default class MainPage extends Component {
             },
             headerTitle: (
                 <TouchableOpacity onPress={() => params._onTitlePress()}
-                                  style={style.middleTitleStyle}>
+                                  style={CommonStyles.commonHeaderTitle}>
                     <Image source={require("../../../src/res/navtitle_home_down_66x20.png")}/>
                 </TouchableOpacity>
             ),
@@ -74,7 +76,7 @@ export default class MainPage extends Component {
     };
 
     state = {
-        data: {},
+        data: [],
         loaded: false,
         refreshing: false,
         loadMore: false,
@@ -121,33 +123,18 @@ export default class MainPage extends Component {
         this.loadData()
     };
 
-    onRequestClose = () => {
-        this.setState({
-            isVerticalDrawerAppears: false,
-        });
-        alert("onRequestClose");
-    };
-
 
     _onTitlePress = () => {
-        this.setState({
-            isVerticalDrawerAppears: true,
-        });
+        this.refs.top.onTitlePress();
     };
 
-
-    onVainPress = () => {
-        this.setState({
-            isVerticalDrawerAppears: false,
-        });
-    };
 
     onItemPressReload(item) {
         this.setState({
             refreshing: true,
         });
         let params = {};
-        if (item.mall ===""&&item.cate==="") {
+        if (item.mall === "" && item.cate === "") {
             this.loadData();
             this.setState({
                 refreshing: false,
@@ -207,56 +194,27 @@ export default class MainPage extends Component {
 
     render() {
         const {data, loaded, refreshing, loadMore} = this.state;
-        console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`)
+        console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`);
         return (
 
             loaded ? <View style={style.container}>
-                <FlatList contentContainerStyle={style.root}
-                          data={data}
-                          renderItem={({item}) => (<MainPageItem
-                              image={item.image}
-                              title={item.title}
-                              name={item.mall}
-                              id={item.id}
-                              onPress={(id) => this.onItemPress(id)}
-                          />)}
-                          keyExtractor={(item) => item.id}
-                          ListFooterComponent={() => {
-                              return loadMore ? <ActivityIndicator size="large" style={{
-                                  marginTop: 5,
-                                  marginBottom: 5
-                              }}/> : null;
-                          }}
-                          onEndReached={this._onEndReached}
-                          onRefresh={this._onRefresh}
-                          refreshing={refreshing}
-                          onEndReachedThreshold={0.1}
+                <CommonItemList refreshing={refreshing}
+                                loadMore={loadMore}
+                                data={data}
+                                onEndReached={this._onEndReached}
+                                onRefresh={this._onRefresh}
+                                style={style.root}
+                                onItemPress={(id)=>this.onItemPress(id)}
+
                 />
-                <Modal
-                    pointerEvents={"box-none"}
-                    animationType="none"
-                    transparent={true}
-                    visible={this.state.isVerticalDrawerAppears}
-                    onRequestClose={() => this.onRequestClose()}>
-                    <TouchableWithoutFeedback onPress={this.onVainPress}>
-                        <View style={{
-                            width: width,
-                            height: height,
-                        }}>
-                            <VerticalDrawer
-                                onVainPress={this.onVainPress}
-                                onItemPressReload={(item)=>this.onItemPressReload(item)}
-                            />
-                        </View>
-                    </TouchableWithoutFeedback>
-
-
-                </Modal>
+                <TopHeaderModal ref="top"
+                                data={VerticalDrawerData}
+                                onItemPressReload={(item) => this.onItemPressReload(item)}
+                />
             </View> : <ActivityIndicator size="large" style={{marginTop: 15}}/>
         );
     }
 }
-
 
 const style = StyleSheet.create({
 
@@ -267,11 +225,6 @@ const style = StyleSheet.create({
 
     root: {},
 
-    middleTitleStyle: {
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "center",
-    },
 
 });
 

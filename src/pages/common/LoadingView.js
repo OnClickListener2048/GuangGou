@@ -12,36 +12,40 @@ const LoadingView = (props) => {
         case "center":
             return (<View style={{
                 flex: 1,
-                alignContent: "center",
+                justifyContent: "center",
                 flexDirection: "column",
             }}>
                 <ActivityIndicator size={"large"}/>
                 {text&&<Text style={{
                     marginTop: 5,
+                    alignSelf: "center",
                 }}>{text}</Text>}
             </View>);
 
         case "top":
             return (<View style={{
                 flex: 1,
-                alignContent: "flex-start",
+                justifyContent: "flex-start",
                 flexDirection: "column",
             }}>
                 <ActivityIndicator size={"large"}/>
-                {text&&<Text style={{
+                {text&&<Text  style={{
                     marginTop: 5,
+                    alignSelf:"center"
+
                 }}>{text}</Text>}
             </View>);
 
         case "bottom":
             return (<View style={{
                 flex: 1,
-                alignContent: "flex-end",
+                justifyContent: "flex-end",
                 flexDirection: "column",
             }}>
                 <ActivityIndicator size={"large"}/>
                 {text&&<Text style={{
                     marginTop: 5,
+                    alignSelf: "center",
                 }}>{text}</Text>}
             </View>);
     }

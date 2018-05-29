@@ -160,7 +160,7 @@ export default class SearchPage extends Component {
                               onEndReachedThreshold={0.1}
                     />
 
-                </View> : <LoadingView location={"top"} text={"加载中"}/>)}
+                </View> : <LoadingView location={"center"} text={"加载中"}/>)}
 
             </View>
         );
