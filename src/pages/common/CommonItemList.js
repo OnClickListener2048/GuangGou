@@ -10,13 +10,22 @@ import MainPageItem from "../main/MainPageItem";
 const CommonItemList = (props) => {
 
     const {
-        refreshing,
-        loadMore,
-        data: {},
-        onEndReached,
-        onRefresh,
-        style:{},
-        onItemPress,
+        refreshing = false,
+        loadMore = false,
+        data = [],
+        onEndReached = () => {
+
+        },
+        onRefresh = () => {
+
+        },
+        renderHeader = () => {
+            return null;
+        },
+        style = {},
+        onItemPress = (id) => {
+            props.navigation.navigate("MainPageItemDetailsPage", {url: 'https://guangdiu.com/api/showdetail.php' + '?' + 'id=' + id});
+        },
     } = props;
 
     return (
@@ -31,14 +40,15 @@ const CommonItemList = (props) => {
                   />)}
                   keyExtractor={(item) => item.id}
                   ListFooterComponent={() => {
-                      return loadMore ? <ActivityIndicator size="large" style={{
+                      return  <ActivityIndicator size="large" style={{
                           marginTop: 5,
                           marginBottom: 5
-                      }}/> : null;
+                      }}/>;
                   }}
                   onEndReached={onEndReached}
                   onRefresh={onRefresh}
                   refreshing={refreshing}
+                  ListHeaderComponent={renderHeader}
                   onEndReachedThreshold={0.1}
         />
     );

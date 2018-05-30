@@ -30,7 +30,7 @@ export default class SearchPage extends Component {
             textAlign: "center",
         },
         headerBackTitle: "返回",
-        headerRight: (<Image/>),
+        headerRight: (<View/>),
     };
 
 

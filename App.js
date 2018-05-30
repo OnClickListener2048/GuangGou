@@ -14,6 +14,7 @@ import {
 } from 'react-navigation';
 import SearchPage from "./src/pages/search/SearchPage";
 import MainPageItemDetailsPage from "./src/pages/main/MainPageItemDetailsPage";
+import SettingPage from "./src/pages/timesquare/SettingPage";
 
 
 export default createStackNavigator({
@@ -37,6 +38,10 @@ export default createStackNavigator({
 
     MainPageItemDetailsPage:{
         screen:MainPageItemDetailsPage,
+    },
+
+    SettingPage:{
+        screen: SettingPage,
     }
 
 
@@ -45,73 +50,6 @@ export default createStackNavigator({
 });
 
 
-// class DetailsScreen extends React.Component {
-//     static navigationOptions = {
-//         title: "DetailsScreen"
-//     };
-//     render() {
-//         return (
-//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//                 <Text>Details!</Text>
-//             </View>
-//         );
-//     }
-// }
-//
-// class HomeScreen extends React.Component {
-//     static navigationOptions = {
-//         title: "HomeScreen"
-//     };
-//
-//     render() {
-//         return (
-//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//                 {/* other code from before here */}
-//                 <Button
-//                     title="HomeScreen Go to Details"
-//                     onPress={() => this.props.navigation.navigate('Details')}
-//                 />
-//             </View>
-//         );
-//     }
-// }
-//
-// class SettingsScreen extends React.Component {
-//     static navigationOptions = {
-//         title: "SettingsScreen"
-//     };
-//     render() {
-//         return (
-//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//                 {/* other code from before here */}
-//                 <Button
-//                     title="SettingsScreen Go to Details"
-//                     onPress={() => this.props.navigation.navigate('Details')}
-//                 />
-//             </View>
-//         );
-//     }
-// }
-//
-// const HomeStack = createStackNavigator({
-//     Home: HomeScreen,
-//     Details: DetailsScreen,
-// });
-//
-// const SettingsStack = createStackNavigator({
-//     Settings: SettingsScreen,
-//     Details: DetailsScreen,
-// });
-//
-// export default createBottomTabNavigator(
-//     {
-//         Home: HomeStack,
-//         Settings: SettingsStack,
-//     },
-//     {
-//         /* Other configuration remains unchanged */
-//     }
-// );
 
 
 console.disableYellowBox = true;

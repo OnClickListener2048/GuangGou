@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     Image,
     Text, TouchableOpacity,
@@ -6,47 +6,43 @@ import {
 } from 'react-native';
 import {SCREEN_WIDTH} from "../../utils/Constant";
 
-export default class TimeSquarePage extends Component{
+export default class TimeSquarePage extends Component {
 
-    static navigationOptions = {
-        title: 'Home',
-        headerStyle: {
-            backgroundColor: '#f4511e',
-        },
-        headerTitle: "TimeSquarePage",
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            flex: 1,
-            fontSize: 30,
-            width: SCREEN_WIDTH,
-            alignSelf: "center",
-            textAlign: "center",
-        },
-        headerBackTitle: null,
-        headerLeft: (<TouchableOpacity>
-            <Image style={{
-                width: 20,
-                height: 20,
-                marginLeft: 15,
-            }}
-                   source={require("../../res/hot_icon_20x20.png")}/>
-        </TouchableOpacity>),
+    static navigationOptions = ({navigation}) => {
+        return ({
+            title: 'Home',
+            headerStyle: {
+                backgroundColor: '#f4511e',
+            },
+            headerTitle: "小时风云榜",
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                flex: 1,
+                fontSize: 20,
+                width: SCREEN_WIDTH,
+                alignSelf: "center",
+                textAlign: "center",
+            },
+            headerBackTitle: null,
+            headerLeft: (<View/>),
 
-        headerRight: (
-            <TouchableOpacity>
-                <Image
-                    style={{
-                        width: 20,
-                        height: 20,
-                        marginRight: 15,
-                    }}
-                    source={require("../../res/search_icon_20x20.png")}/>
-            </TouchableOpacity>
-        ),
-        gesturesEnabled: true,
+            headerRight: (
+                <TouchableOpacity onPress={()=>navigation.navigate("SettingPage")} >
+                    <Text style={{
+                        color: "white",
+                        marginRight:10,
+                        fontSize:18,
+                    }}>
+                        设置
+                    </Text>
+                </TouchableOpacity>
+            ),
+            gesturesEnabled: true,
+        });
+
     };
 
-    render(){
+    render() {
         return (
 
             <View>
@@ -56,3 +52,9 @@ export default class TimeSquarePage extends Component{
         );
     }
 }
+
+const style = StyleSheet.create({
+    container:{
+
+    },
+});

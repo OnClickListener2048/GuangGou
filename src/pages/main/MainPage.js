@@ -45,8 +45,9 @@ export default class MainPage extends Component {
             headerTintColor: '#fff',
             headerTitleStyle: {
                 flex: 1,
-                fontSize: 30,
+                fontSize: 20,
                 width: SCREEN_WIDTH,
+                color: "white",
                 alignSelf: "center",
                 textAlign: "center",
             },
@@ -220,7 +221,6 @@ const style = StyleSheet.create({
 
     container: {
         flex: 1,
-        alignItems: "center",
     },
 
     root: {},

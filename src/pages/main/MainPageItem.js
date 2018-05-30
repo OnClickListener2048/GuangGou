@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     imageRight: {
         height: 90,
         width: 90,
+        marginLeft:10,
     },
 
     rightContainer: {
