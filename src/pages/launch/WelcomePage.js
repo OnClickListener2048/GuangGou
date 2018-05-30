@@ -8,6 +8,7 @@ import {Text,
             }
 from "react-native"
 export default class WelcomePage extends Component {
+    static navigationOptions = {};
 
     componentDidMount() {
         // do stuff while splash screen is shown

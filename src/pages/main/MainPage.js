@@ -194,7 +194,7 @@ export default class MainPage extends Component {
     };
 
     render() {
-        const {data, loaded, refreshing, loadMore} = this.state;
+        const {data=[], loaded, refreshing, loadMore} = this.state;
         console.log(`data+++++++++++++++++++++${JSON.stringify(data)}`);
         return (
 

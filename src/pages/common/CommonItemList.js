@@ -26,6 +26,9 @@ const CommonItemList = (props) => {
         onItemPress = (id) => {
             props.navigation.navigate("MainPageItemDetailsPage", {url: 'https://guangdiu.com/api/showdetail.php' + '?' + 'id=' + id});
         },
+        renderFooter = () => {
+            return null;
+        }
     } = props;
 
     return (
@@ -40,7 +43,7 @@ const CommonItemList = (props) => {
                   />)}
                   keyExtractor={(item) => item.id}
                   ListFooterComponent={() => {
-                      return  <ActivityIndicator size="large" style={{
+                      return renderFooter === null ? null : <ActivityIndicator size="large" style={{
                           marginTop: 5,
                           marginBottom: 5
                       }}/>;
