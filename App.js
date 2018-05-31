@@ -24,7 +24,6 @@ export default createStackNavigator({
     Main: {
         screen: Main,
         navigationOptions: {
-            title: "2132131",
             header: null,
         },
     },

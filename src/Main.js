@@ -12,7 +12,7 @@ import {
 import React, {Component} from 'react';
 import {SCREEN_WIDTH} from "./utils/Constant";
 import HotPage from "./pages/hot/HotPage";
-
+import CommonTabBadgeIcon from "./pages/common/CommonTabBadgeIcon";
 
 
 const MainStack = createStackNavigator({
@@ -32,70 +32,42 @@ const TimeStack = createStackNavigator({
     }
 });
 
-
 const Main = createBottomTabNavigator({
+
+
+
         MainPage: {
             screen: MainStack,
             navigationOptions: {
-                tabBarLabel: "首页"
-                , tabBarIcon: ({tintColor = {}, focused}) => focused ? (
-                        <Image style={{
-                            width: 30
-                            , height: 30
-                            ,
-                        }} source={
-                            require("../src/res/tabbar_home_selected_30x30.png")
-                        }/>
-                    ) :
-                    <Image style={{
-                        width: 30
-                        , height: 30
-                        ,
-                    }} source={
-                        require("../src/res/tabbar_home_30x30.png")
-                    }/>
+                tabBarLabel: "首页",
+                tabBarIcon: ({tintColor = {}, focused}) => (
+                    <CommonTabBadgeIcon normalImage={"tabbar_home_30x30"}
+                                        pressedImage={"tabbar_home_selected_30x30"}
+                                        num={123}
+                                        focused={focused}/>)
             },
         },
         TaoPage: {
             screen: TaoStack,
             navigationOptions: {
                 tabBarLabel: "淘淘"
-                , tabBarIcon: ({tintColor = {}, focused}) => focused ? (
-                    <Image style={{
-                        width: 30
-                        , height: 30
-                        ,
-                    }} source={
-                        require("../src/res/tabbar_abroad_selected_30x30.png")
-                    }/>
-                ) : <Image style={{
-                    width: 30
-                    , height: 30
-                    ,
-                }} source={
-                    require("../src/res/tabbar_abroad_30x30.png")
-                }/>
+                , tabBarIcon: ({tintColor = {}, focused}) => (
+                    <CommonTabBadgeIcon normalImage={"tabbar_abroad_30x30"}
+                                        num={456}
+                                        pressedImage={"tabbar_abroad_selected_30x30"}
+                                        focused={focused}/>
+                )
             },
         },
         TimeSquarePage: {
             screen: TimeStack,
             navigationOptions: {
                 tabBarLabel: "时代广场"
-                , tabBarIcon: ({tintColor = {}, focused}) => focused ? (
-                    <Image style={{
-                        width: 30
-                        , height: 30
-                        ,
-                    }} source={
-                        require("../src/res/tabbar_rank_selected_30x30.png")
-                    }/>
-                ) : <Image style={{
-                    width: 30
-                    , height: 30
-                    ,
-                }} source={
-                    require("../src/res/tabbar_rank_30x30.png")
-                }/>
+                , tabBarIcon: ({tintColor = {}, focused}) =>  (
+                    <CommonTabBadgeIcon normalImage={"tabbar_rank_30x30"}
+                                        pressedImage={"tabbar_rank_selected_30x30"}
+                                        num={789}
+                                        focused={focused}/>)
             },
         }
     },
